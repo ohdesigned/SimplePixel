@@ -17,12 +17,17 @@
       </label>
     </div>
     <div class="mode-switch">
+      <button id="workflowVoxelBtn">Voxel</button>
+      <button id="workflowMeshBtn" class="active">Low-Poly Mesh</button>
+    </div>
+    <div class="mode-switch">
       <button id="modeModelBtn" class="active">Modeling</button>
       <button id="modePaintBtn">Painting</button>
     </div>
     <div class="actions">
       <button id="undoBtn">Undo</button>
       <button id="redoBtn">Redo</button>
+      <button id="saveBtn">Save</button>
       <button id="quickResetBtn">Quick Reset</button>
       <select id="downloadFormat">
         <option value="json">JSON</option>
@@ -38,6 +43,68 @@
       <section>
         <h2>Tools</h2>
         <div id="toolButtons" class="icon-toolbar"></div>
+      </section>
+
+      <section id="leftLayersSection">
+        <h2>Layers / Objects</h2>
+        <div class="button-row">
+          <button id="newObjectBtn">New Object</button>
+          <button id="duplicateObjectBtn">Duplicate</button>
+          <button id="newLayerBtn">New Layer</button>
+        </div>
+        <p class="muted">Click a layer to expand it, double-click to rename, right-click to delete.</p>
+        <div id="objectList" class="object-list"></div>
+        <div id="meshList" class="object-list mesh-layer-tree"></div>
+        <p class="muted" id="meshStats">No meshes yet.</p>
+      </section>
+
+      <section id="leftObjectLibrarySection" class="hidden">
+        <h2>Object Library</h2>
+        <p class="muted">Click a primitive to drop it into your scene as an editable low-poly template.</p>
+        <div id="objectLibraryList" class="object-library-grid"></div>
+      </section>
+
+      <section id="leftStampSection" class="hidden">
+        <h2>Stamps</h2>
+        <p class="muted">Save a selection as a stamp, then click it to place.</p>
+        <button id="leftSaveStampBtn">Save Selection As Stamp</button>
+        <div id="leftStampList" class="stamp-list"></div>
+        <p class="muted" id="leftStampEmpty">No stamps saved yet.</p>
+      </section>
+
+      <section id="shapeSection" class="hidden">
+        <h2>Shape Maker</h2>
+        <p class="muted">Shape tool menu. Click-drag in viewport to size before placing.</p>
+        <label class="row">
+          <span>Type</span>
+          <select id="shapeType">
+            <option value="cube">Cube</option>
+            <option value="sphere">Sphere</option>
+            <option value="cylinder">Cylinder</option>
+            <option value="triangular_prism">Triangular Prism</option>
+            <option value="pyramid">Pyramid</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Radius</span>
+          <input id="shapeRadius" type="range" min="1" max="8" value="3">
+          <span id="shapeRadiusValue">3</span>
+        </label>
+        <label class="row">
+          <span>Segments</span>
+          <input id="shapeSegments" type="range" min="8" max="64" step="4" value="32">
+          <span id="shapeSegmentsValue">32</span>
+        </label>
+        <label class="row hidden">
+          <input id="hollowToggle" type="checkbox">
+          <span>Hollow Shell</span>
+        </label>
+        <label class="row hidden">
+          <span>Wall</span>
+          <input id="wallThickness" type="range" min="1" max="6" value="2">
+          <span id="wallThicknessValue">2</span>
+        </label>
+        <button id="addShapeBtn">Add Shape To Center</button>
       </section>
     </aside>
 
@@ -55,47 +122,13 @@
         <p class="muted">Hover tools on the left to see names and keybinds.</p>
       </section>
 
-      <section>
+      <section id="brushSection">
         <h2>Brush</h2>
         <label class="row">
           <span>Size</span>
           <input id="brushSize" type="range" min="1" max="6" value="1">
           <span id="brushSizeValue">1</span>
         </label>
-      </section>
-
-      <section id="shapeSection">
-        <h2>Shape Builder</h2>
-        <label class="row">
-          <span>Type</span>
-          <select id="shapeType">
-            <option value="cube">Cube</option>
-            <option value="sphere">Sphere</option>
-            <option value="cylinder">Cylinder</option>
-            <option value="cone">Cone</option>
-            <option value="stair">Stair</option>
-          </select>
-        </label>
-        <label class="row">
-          <span>Radius</span>
-          <input id="shapeRadius" type="range" min="1" max="8" value="3">
-          <span id="shapeRadiusValue">3</span>
-        </label>
-        <label class="row">
-          <span>Segments</span>
-          <input id="shapeSegments" type="range" min="8" max="64" step="4" value="32">
-          <span id="shapeSegmentsValue">32</span>
-        </label>
-        <label class="row">
-          <input id="hollowToggle" type="checkbox">
-          <span>Hollow Shell</span>
-        </label>
-        <label class="row">
-          <span>Wall</span>
-          <input id="wallThickness" type="range" min="1" max="6" value="2">
-          <span id="wallThicknessValue">2</span>
-        </label>
-        <button id="addShapeBtn">Add Shape To Center</button>
       </section>
 
       <section id="paintSection">
@@ -110,22 +143,75 @@
         </label>
       </section>
 
-      <section>
-        <h2>Layers / Objects</h2>
+      <section id="meshSection" class="hidden">
+        <h2>Mesh Primitive</h2>
+        <p class="muted">Add a low-poly primitive. Click the canvas in Painting mode to paint pixels onto a face.</p>
+        <label class="row">
+          <span>Type</span>
+          <select id="meshShapeType">
+            <option value="cube">Cube</option>
+            <option value="sphere">Sphere</option>
+            <option value="cylinder">Cylinder</option>
+            <option value="triangular_prism">Triangular Prism</option>
+            <option value="pyramid">Pyramid</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Size</span>
+          <input id="meshSize" type="range" min="2" max="10" step="0.5" value="5">
+          <span id="meshSizeValue">5</span>
+        </label>
+        <label class="row">
+          <span>Base Color</span>
+          <input id="meshBaseColor" type="color" value="#9aa0a6">
+        </label>
         <div class="button-row">
-          <button id="newObjectBtn">New Object</button>
-          <button id="duplicateObjectBtn">Duplicate</button>
+          <button id="addMeshBtn">Add Mesh</button>
+          <button id="clearMeshesBtn" class="danger">Clear Meshes</button>
         </div>
-        <div id="objectList" class="object-list"></div>
       </section>
 
-      <section>
+      <section id="selectionStampSection">
         <h2>Selection / Stamp</h2>
         <button id="saveStampBtn">Save Selection As Stamp</button>
         <div class="row">
           <span>Stamp Library</span>
         </div>
         <div id="stampList" class="stamp-list"></div>
+      </section>
+
+      <section id="transformSection">
+        <h2>Transform (Selection/Object)</h2>
+        <p class="muted">Select voxels, or transform active object if nothing is selected.</p>
+        <label class="row">
+          <span>Scale X</span>
+          <input id="scaleX" type="range" min="0.5" max="2" step="0.05" value="1">
+          <span id="scaleXValue">1.00</span>
+        </label>
+        <label class="row">
+          <span>Scale Y</span>
+          <input id="scaleY" type="range" min="0.5" max="2" step="0.05" value="1">
+          <span id="scaleYValue">1.00</span>
+        </label>
+        <label class="row">
+          <span>Scale Z</span>
+          <input id="scaleZ" type="range" min="0.5" max="2" step="0.05" value="1">
+          <span id="scaleZValue">1.00</span>
+        </label>
+        <label class="row">
+          <span>Slant X</span>
+          <input id="slantX" type="range" min="-1" max="1" step="0.05" value="0">
+          <span id="slantXValue">0.00</span>
+        </label>
+        <label class="row">
+          <span>Slant Z</span>
+          <input id="slantZ" type="range" min="-1" max="1" step="0.05" value="0">
+          <span id="slantZValue">0.00</span>
+        </label>
+        <div class="button-row">
+          <button id="applyTransformBtn">Apply Transform</button>
+          <button id="resetTransformBtn">Reset</button>
+        </div>
       </section>
 
       <section>
@@ -178,7 +264,8 @@
   </main>
 
   <footer class="footer">
-    Simplified voxel workflow inspired by playful console creation menus and beginner-friendly 3D editors.
+    <span class="footer-text">Simplified voxel workflow inspired by playful console creation menus and beginner-friendly 3D editors.</span>
+    <span id="cameraInfo" class="footer-camera"></span>
   </footer>
 
   <script type="module" src="app.js"></script>

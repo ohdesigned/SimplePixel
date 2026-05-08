@@ -1,0 +1,186 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SimplePixel 3D Builder</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1>SimplePixel 3D Builder</h1>
+      <label class="theme-toggle" title="Toggle color mode">
+        <input id="uiThemeToggle" type="checkbox">
+        <span class="theme-track"><span class="theme-thumb"></span></span>
+        <span id="themeLabel">Light</span>
+      </label>
+    </div>
+    <div class="mode-switch">
+      <button id="modeModelBtn" class="active">Modeling</button>
+      <button id="modePaintBtn">Painting</button>
+    </div>
+    <div class="actions">
+      <button id="undoBtn">Undo</button>
+      <button id="redoBtn">Redo</button>
+      <button id="quickResetBtn">Quick Reset</button>
+      <select id="downloadFormat">
+        <option value="json">JSON</option>
+        <option value="obj">OBJ</option>
+      </select>
+      <button id="downloadBtn">Download</button>
+      <button id="clearBtn" class="danger">Clear</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <aside class="panel controls left-panel">
+      <section>
+        <h2>Tools</h2>
+        <div id="toolButtons" class="icon-toolbar"></div>
+      </section>
+    </aside>
+
+    <section class="editor">
+      <canvas id="viewport" width="900" height="620"></canvas>
+      <div class="hud">
+        <span id="activeTool">Tool: pen</span>
+        <span id="hint">Modeling: click to add gray voxels, shift+drag to orbit.</span>
+      </div>
+    </section>
+
+    <aside class="panel controls right-panel">
+      <section>
+        <h2>Properties <span id="modeLabel">(Modeling)</span></h2>
+        <p class="muted">Hover tools on the left to see names and keybinds.</p>
+      </section>
+
+      <section>
+        <h2>Brush</h2>
+        <label class="row">
+          <span>Size</span>
+          <input id="brushSize" type="range" min="1" max="6" value="1">
+          <span id="brushSizeValue">1</span>
+        </label>
+      </section>
+
+      <section id="shapeSection">
+        <h2>Shape Builder</h2>
+        <label class="row">
+          <span>Type</span>
+          <select id="shapeType">
+            <option value="cube">Cube</option>
+            <option value="sphere">Sphere</option>
+            <option value="cylinder">Cylinder</option>
+            <option value="cone">Cone</option>
+            <option value="stair">Stair</option>
+          </select>
+        </label>
+        <label class="row">
+          <span>Radius</span>
+          <input id="shapeRadius" type="range" min="1" max="8" value="3">
+          <span id="shapeRadiusValue">3</span>
+        </label>
+        <label class="row">
+          <span>Segments</span>
+          <input id="shapeSegments" type="range" min="8" max="64" step="4" value="32">
+          <span id="shapeSegmentsValue">32</span>
+        </label>
+        <label class="row">
+          <input id="hollowToggle" type="checkbox">
+          <span>Hollow Shell</span>
+        </label>
+        <label class="row">
+          <span>Wall</span>
+          <input id="wallThickness" type="range" min="1" max="6" value="2">
+          <span id="wallThicknessValue">2</span>
+        </label>
+        <button id="addShapeBtn">Add Shape To Center</button>
+      </section>
+
+      <section id="paintSection">
+        <h2>Color</h2>
+        <label class="row">
+          <span>Primary</span>
+          <input id="colorPicker" type="color" value="#37b24d">
+        </label>
+        <label class="row">
+          <span>Secondary</span>
+          <input id="secondaryColorPicker" type="color" value="#2f9e44">
+        </label>
+      </section>
+
+      <section>
+        <h2>Layers / Objects</h2>
+        <div class="button-row">
+          <button id="newObjectBtn">New Object</button>
+          <button id="duplicateObjectBtn">Duplicate</button>
+        </div>
+        <div id="objectList" class="object-list"></div>
+      </section>
+
+      <section>
+        <h2>Selection / Stamp</h2>
+        <button id="saveStampBtn">Save Selection As Stamp</button>
+        <div class="row">
+          <span>Stamp Library</span>
+        </div>
+        <div id="stampList" class="stamp-list"></div>
+      </section>
+
+      <section>
+        <h2>Lighting</h2>
+        <label class="row">
+          <input id="lightingToggle" type="checkbox" checked>
+          <span>Preview Lighting</span>
+        </label>
+        <label class="row">
+          <span>Light X</span>
+          <input id="lightX" type="range" min="-1" max="1" step="0.05" value="-0.6">
+        </label>
+        <label class="row">
+          <span>Light Y</span>
+          <input id="lightY" type="range" min="-1" max="1" step="0.05" value="0.8">
+        </label>
+        <label class="row">
+          <span>Light Z</span>
+          <input id="lightZ" type="range" min="-1" max="1" step="0.05" value="0.5">
+        </label>
+        <label class="row">
+          <span>Ambient</span>
+          <input id="ambientStrength" type="range" min="0" max="1" step="0.05" value="0.28">
+        </label>
+        <label class="row">
+          <span>Hemisphere</span>
+          <input id="hemiStrength" type="range" min="0" max="1" step="0.05" value="0.36">
+        </label>
+        <label class="row">
+          <span>Soft Shadow</span>
+          <input id="shadowStrength" type="range" min="0" max="1" step="0.05" value="0.24">
+        </label>
+        <label class="row">
+          <span>Reflection</span>
+          <input id="reflectionStrength" type="range" min="0" max="1" step="0.05" value="0.14">
+        </label>
+        <label class="row">
+          <input id="unifiedClayToggle" type="checkbox">
+          <span>Unified Clay Preview</span>
+        </label>
+        <label class="row">
+          <span>Viewport BG</span>
+          <select id="viewportBgMode">
+            <option value="light" selected>Light</option>
+            <option value="dark">Dark</option>
+          </select>
+        </label>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="footer">
+    Simplified voxel workflow inspired by playful console creation menus and beginner-friendly 3D editors.
+  </footer>
+
+  <script type="module" src="app.js"></script>
+</body>
+</html>

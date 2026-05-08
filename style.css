@@ -1,0 +1,358 @@
+:root {
+  color-scheme: light;
+  --bg: #fff6ee;
+  --panel: #fff6ee;
+  --panel-border: #262628;
+  --text: #262628;
+  --accent: #a79cf5;
+  --danger: #7d78ad;
+  --soft-shadow: 0 8px 20px rgba(38, 38, 40, 0.12);
+  --control-bg: #d9d2ff;
+  --control-hover: #cfc4ff;
+  --control-border: #7a70d4;
+  --topbar: #fff6ee;
+  --footer: #fff6ee;
+  --hud: #262628;
+  --section-divider: #262628;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Trebuchet MS", "Segoe UI", Tahoma, sans-serif;
+  background: radial-gradient(circle at top left, #fffaf4 0%, var(--bg) 50%, #f8eee9 100%);
+  color: var(--text);
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--panel-border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  background: var(--topbar);
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+h1, h2 {
+  margin: 0;
+  font-weight: 600;
+}
+
+h1 {
+  font-size: 1.05rem;
+  letter-spacing: 0.02em;
+}
+
+h2 {
+  font-size: 0.95rem;
+  margin-bottom: 8px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 78px 1fr 340px;
+  gap: 12px;
+  padding: 12px;
+  flex: 1;
+  min-width: 1180px;
+}
+
+.panel {
+  background: var(--panel);
+  border: 1px solid var(--panel-border);
+  border-radius: 14px;
+  box-shadow: var(--soft-shadow);
+}
+
+.controls {
+  padding: 12px;
+  overflow-y: auto;
+  max-height: calc(100vh - 106px);
+}
+
+.left-panel {
+  padding: 8px;
+}
+
+.controls section {
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--section-divider);
+}
+
+button,
+select,
+input[type="color"] {
+  border: 1px solid var(--control-border);
+  border-radius: 8px;
+  color: var(--text);
+  background: var(--control-bg);
+  padding: 7px 9px;
+}
+
+button {
+  cursor: pointer;
+  transition: transform 0.12s ease, background 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 3px 0 0 var(--control-border);
+}
+
+button:hover {
+  border-color: var(--panel-border);
+  background: var(--control-bg);
+}
+
+button:active {
+  transform: translateY(3px);
+  box-shadow: 0 0 0 0 var(--control-border);
+}
+
+.danger {
+  background: var(--control-bg);
+  border-color: var(--control-border);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.mode-switch {
+  display: flex;
+  gap: 6px;
+}
+
+.theme-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.86rem;
+}
+
+.theme-toggle input {
+  display: none;
+}
+
+.theme-track {
+  width: 42px;
+  height: 22px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  background: var(--control-bg);
+  position: relative;
+  display: inline-block;
+}
+
+.theme-thumb {
+  width: 16px;
+  height: 16px;
+  border-radius: 999px;
+  background: var(--accent);
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  transition: left 0.15s ease;
+}
+
+.theme-toggle input:checked + .theme-track .theme-thumb {
+  left: 22px;
+}
+
+.mode-switch button.active,
+.actions button.active,
+.button-row button.active,
+.stamp-list button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--panel);
+  transform: translateY(3px);
+  box-shadow: 0 0 0 0 var(--control-border);
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 8px;
+  margin: 6px 0;
+}
+
+.row input[type="range"] {
+  width: 140px;
+  accent-color: var(--accent);
+}
+
+input[type="checkbox"] {
+  accent-color: var(--accent);
+}
+
+.icon-toolbar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.icon-toolbar button {
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 1rem;
+}
+
+.tool-icon {
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tool-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+
+.icon-toolbar button.active {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--panel);
+  transform: translateY(3px);
+  box-shadow: 0 0 0 0 var(--control-border);
+}
+
+.icon-toolbar button.disabled {
+  opacity: 0.42;
+}
+
+.editor {
+  position: relative;
+}
+
+#viewport {
+  width: 100%;
+  height: calc(100vh - 160px);
+  min-height: 620px;
+  border-radius: 14px;
+  border: 1px solid var(--panel-border);
+  box-shadow: var(--soft-shadow);
+  background: linear-gradient(180deg, #dbe8f5, #e8efe9);
+  cursor: crosshair;
+}
+
+#viewport.bg-light {
+  background: linear-gradient(180deg, #dbe8f5, #e8efe9);
+}
+
+#viewport.bg-dark {
+  background: linear-gradient(180deg, #1f2735, #121822);
+}
+
+.hud {
+  margin-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: var(--hud);
+}
+
+.stamp-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.stamp-list button {
+  font-size: 0.85rem;
+}
+
+.button-row {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.object-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.object-item {
+  border: none;
+  border-radius: 8px;
+  padding: 6px;
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  gap: 6px;
+  align-items: center;
+  background: transparent;
+}
+
+.object-item.active {
+  border-color: transparent;
+  box-shadow: none;
+}
+
+.object-name {
+  font-size: 0.88rem;
+}
+
+.footer {
+  border-top: 1px solid var(--panel-border);
+  padding: 8px 12px;
+  font-size: 0.82rem;
+  color: var(--hud);
+  background: var(--footer);
+}
+
+.muted {
+  margin: 0 0 8px;
+  font-size: 0.82rem;
+  color: var(--hud);
+}
+
+.hidden {
+  display: none;
+}
+
+@media (max-width: 1180px) {
+  body {
+    overflow-x: auto;
+  }
+}
+
+body.theme-dark-lavender {
+  --bg: #262628;
+  --panel: #262628;
+  --panel-border: #fff6ee;
+  --text: #fff6ee;
+  --accent: #d86072;
+  --danger: #d86072;
+  --soft-shadow: 0 8px 22px rgba(8, 8, 12, 0.35);
+  --control-bg: #3d2328;
+  --control-hover: #5a2b35;
+  --control-border: #d86072;
+  --topbar: #262628;
+  --footer: #262628;
+  --hud: #fff6ee;
+  --section-divider: #fff6ee;
+}
+
+body.theme-dark-lavender {
+  background: radial-gradient(circle at top left, #2d2b3a 0%, #262628 55%, #201f22 100%);
+}
